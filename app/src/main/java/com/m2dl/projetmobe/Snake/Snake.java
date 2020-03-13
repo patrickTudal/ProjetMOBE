@@ -2,6 +2,7 @@ package com.m2dl.projetmobe.Snake;
 
 import android.graphics.Color;
 
+import com.m2dl.projetmobe.Board.BoardView;
 import com.m2dl.projetmobe.Enum.DirectionEnum;
 
 import java.util.LinkedList;
@@ -53,9 +54,9 @@ public class Snake {
 		if (directionEnum.equals(DirectionEnum.LEFT)) {
 
 			if (node.getColumn() == 0) {
-				node.setColumn(endColumn);
+				node.setColumn(endColumn-1);
 			} else {
-				node.setColumn(node.getColumn() - 1);
+				node.setColumn((node.getColumn() - 1)%BoardView.heightNum);
 			}
 
 		} else if (directionEnum.equals(DirectionEnum.RIGHT)) {
@@ -63,7 +64,7 @@ public class Snake {
 			if (node.getColumn() == endColumn) {
 				node.setColumn(0);
 			} else {
-				node.setColumn(node.getColumn() + 1);
+				node.setColumn((node.getColumn() + 1)% BoardView.heightNum);
 			}
 
 		} else if (directionEnum.equals(DirectionEnum.UP)) {
@@ -71,7 +72,7 @@ public class Snake {
 			if (node.getRow() == 0) {
 				node.setRow(endRow - 1);
 			} else {
-				node.setRow(node.getRow() - 1);
+				node.setRow((node.getRow() - 1)% BoardView.widthNum);
 			}
 
 		} else if (directionEnum.equals(DirectionEnum.DOWN)) {
@@ -79,7 +80,7 @@ public class Snake {
 			if (node.getRow() == endRow) {
 				node.setRow(0);
 			} else {
-				node.setRow(node.getRow() + 1);
+				node.setRow((node.getRow() + 1)% BoardView.widthNum);
 			}
 
 		}
