@@ -121,11 +121,11 @@ public class Snake {
 	public boolean isNodeOnBody(Node node) {
 		LinkedList<Node> listToCompare = new LinkedList(body);
 		listToCompare.remove(this.getHead());
-		/*for(Node n : new LinkedList<>(body)) {
+		for(Node n : new LinkedList<>(listToCompare)) {
 			if(n.equals(node)) {
 				return true;
 			}
-		}*/
+		}
 		return false;
 	}
 
