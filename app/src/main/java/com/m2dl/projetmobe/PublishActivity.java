@@ -1,5 +1,6 @@
 package com.m2dl.projetmobe;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,7 @@ public class PublishActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FirebaseService.publishScore(score,inputPseudo.getText().toString());
+                startActivity(new Intent(PublishActivity.this,MainActivity.class));
             }
         });
     }
