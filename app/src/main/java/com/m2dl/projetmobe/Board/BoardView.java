@@ -21,34 +21,43 @@ import java.util.Random;
 
 @SuppressLint("DrawAllocation")
 public class BoardView extends View {
+	public static final int heightNum = 40;
+	public static final int widthNum = 20;
+	private static final int speedNum = 400;
 
-    public static final int heightNum = 40;
-    public static final int widthNum = 20;
-    private static final int speedNum = 100;
-    private static final int TIMER_APPLE = 30;
-    public long score = 0L;
-    public DirectionEnum directionEnum;
-    //Collection<Node> board = new LinkedHashSet<Node>();
-    boolean boardCreated = false;
-    private GameOverListener gameOverListener;
-    private int counterApple;
-    private Snake snake;
-    private Node apple;
-    private Paint paint;
-    private Handler customHandler;
-    private Handler appleHandler;
-    private int width;
-    private int height;
+	public interface GameOverListener {
+		void onGameOver();
+	}
 
-    private int speed;
-    private Node[][] board;
-    private SensorManager sensorManager;
-    private Runnable updateTimerThread = new Runnable() {
-        public void run() {
-            snake.move(directionEnum);
-            invalidate();
-        }
-    };
+	private GameOverListener gameOverListener;
+
+	public void setGameOverListener(GameOverListener listener) {
+		this.gameOverListener = listener;
+	}
+
+	private static final int TIMER_APPLE = 30;
+	private int counterApple;
+
+	private Snake snake;
+	private Node apple;
+
+	private Paint paint;
+	private Handler customHandler;
+	private Handler appleHandler;
+
+	public long score = 0L;
+
+	private int width;
+	private int height;
+	
+	private int speed;
+
+	public DirectionEnum directionEnum;
+ 	private Node[][] board;
+	//Collection<Node> board = new LinkedHashSet<Node>();
+	boolean boardCreated = false;
+
+	private SensorManager sensorManager;
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
