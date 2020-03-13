@@ -40,10 +40,6 @@ public class BoardView extends View {
 		this.gameOverListener = listener;
 	}
 
-	private static final int heightNum = 40;
-	private static final int widthNum = 20;
-	private static final int speedNum = 40;
-
 	private static final int TIMER_APPLE = 30;
 	private int counterApple;
 
