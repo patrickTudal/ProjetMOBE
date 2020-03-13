@@ -9,7 +9,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.m2dl.projetmobe.MainActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,7 +23,7 @@ public class FirebaseService {
     private static final String SCORES_ID_KEY = "scoresId";
 
 
-    public static void publishScore(String score, String pseudo){
+    public static void publishScore(String pseudo, String score){
         Log.i("FirebaseService","publish score");
         autoIncrementId( score, pseudo);
     }
@@ -50,28 +52,12 @@ public class FirebaseService {
     }
 
     public static void getAllScores(){
-       /* DatabaseReference myRef = database.getReference("scores");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d("FireBaseService", "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w("FirebaseService", "Failed to read value.", error.toException());
-            }
-        });*/
         DatabaseReference picturesReference = database.getReference(SCORES_KEY);
         picturesReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                HashMap<String, HashMap<String,String>> value = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
-                //MapActivity.callbackImagesFirebase(value, context, gMap, tokenId);
+                ArrayList<HashMap<String, String>> value = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
+                MainActivity.callbackImagesFirebase(value);
             }
 
             @Override
