@@ -24,16 +24,19 @@ import java.util.LinkedList;
 public class BoardView extends View {
 	private static final int heightNum = 40;
 	private static final int widthNum = 20;
+	private static final int speedNum = 400;
 
 	private Snake snake;
 
 	private Paint paint;
 	private Handler customHandler;
 
-	private long premium = 0L;
+	private long score = 0L;
 
 	private int width;
 	private int height;
+	
+	private int speed;
 	
 	DirectionEnum directionEnum;
 //	private Node[][] board;
@@ -53,12 +56,12 @@ public class BoardView extends View {
 		super.onDraw(canvas);
 		initGame(canvas);
 		printSnake(canvas);
-		printPremium(canvas);
+		printscore(canvas);
 		postDeleyed();
 	}
 
 	private void postDeleyed() {
-		customHandler.postDelayed(updateTimerThread, 1000 / 10);
+		customHandler.postDelayed(updateTimerThread, speed);
 	}
 
 	private void initGame(Canvas canvas) {
@@ -69,11 +72,11 @@ public class BoardView extends View {
 		}
 	}
 
-	private void printPremium(Canvas canvas) {
+	private void printscore(Canvas canvas) {
 		paint.setAntiAlias(true);
 		paint.setTextSize(20);
 		paint.setColor(Color.RED);
-		canvas.drawText(Long.toString(premium++), 15, 15, paint);
+		canvas.drawText("Score :"+(score++), 15, 15, paint);
 	}
 
 	private void printSnake(Canvas canvas) {
@@ -113,6 +116,8 @@ public class BoardView extends View {
 	}
 
 	private void initBoard(Canvas canvas) {
+		
+		speed = speedNum;
 		
 		int endWidth = (canvas.getWidth());
 		int endHeight = (canvas.getHeight());
@@ -172,6 +177,7 @@ public class BoardView extends View {
 
 	private Runnable updateTimerThread = new Runnable() {
 		public void run() {
+			speed -= 2;
 			int rand = (int) (Math.random() * 30); 
 			
 			switch (rand) {
