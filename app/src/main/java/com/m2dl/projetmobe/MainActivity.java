@@ -21,7 +21,10 @@ public class MainActivity extends AppCompatActivity {
     private SensorManager sensorManager;
     private Sensor gyroscope;
     private SensorEventListener gyroscopeEventListner;
+    private Sensor light;
+    private SensorEventListener lightEventListener;
     private static final float GYROSCOPE_SENSITIVITY = 2f;
+    private float lightValue = 400f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,25 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Sensor", "Gyroscope sensor onAccuracyChanged");
             }
         };
+        light = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        lightEventListener = new SensorEventListener2() {
+            @Override
+            public void onFlushCompleted(Sensor sensor) {
+
+            }
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                Log.i("Sensor", "Sensor light changed");
+                boardView.speed = (int) event.values[0];
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+            }
+        };
         sensorManager.registerListener(gyroscopeEventListner,gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(lightEventListener, light, SensorManager.SENSOR_DELAY_NORMAL);
     }
 }

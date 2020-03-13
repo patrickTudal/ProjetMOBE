@@ -55,7 +55,7 @@ public class BoardView extends View {
 	private int width;
 	private int height;
 	
-	private int speed;
+	public int speed;
 
 	public DirectionEnum directionEnum;
  	private Node[][] board;
