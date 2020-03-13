@@ -133,7 +133,7 @@ public class Snake {
 
 
 
-	public void increaseSize(DirectionEnum directionEnum) {
+	public void increaseSize() {
 		Node newNode = new Node(this.getHead().getRow(), this.getHead().getColumn(), null);
 		this.getBody().add(newNode);
 	}

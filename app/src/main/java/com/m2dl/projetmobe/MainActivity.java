@@ -11,9 +11,14 @@ import android.hardware.SensorEventListener2;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.m2dl.projetmobe.Board.BoardView;
 import com.m2dl.projetmobe.Enum.DirectionEnum;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private double last_z;
     private double lastUpdate;
     private static final int SHAKE_THRESHOLD = 1000;
+    private LinearLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, GameOverActivity.class);
                 intent.putExtra("score",Long.toString(boardView.score));
                 startActivity(intent);
+            }
+        });
+        boardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boardView.setApple(null);
+                boardView.createApple();
+                boardView.score=boardView.score-100;
             }
         });
     }
