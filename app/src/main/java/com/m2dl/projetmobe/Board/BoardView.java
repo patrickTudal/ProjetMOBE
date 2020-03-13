@@ -22,43 +22,33 @@ import java.util.Random;
 @SuppressLint("DrawAllocation")
 public class BoardView extends View {
 
-	public interface GameOverListener {
-		void onGameOver();
-	}
+    public static final int heightNum = 40;
+    public static final int widthNum = 20;
+    private static final int speedNum = 100;
+    private static final int TIMER_APPLE = 30;
+    public long score = 0L;
+    public DirectionEnum directionEnum;
+    //Collection<Node> board = new LinkedHashSet<Node>();
+    boolean boardCreated = false;
+    private GameOverListener gameOverListener;
+    private int counterApple;
+    private Snake snake;
+    private Node apple;
+    private Paint paint;
+    private Handler customHandler;
+    private Handler appleHandler;
+    private int width;
+    private int height;
 
-	private GameOverListener gameOverListener;
-
-	public void setGameOverListener(GameOverListener listener) {
-		this.gameOverListener = listener;
-	}
-
-	private static final int heightNum = 40;
-	private static final int widthNum = 20;
-	private static final int speedNum = 40;
-
-	private static final int TIMER_APPLE = 30;
-	private int counterApple;
-
-	private Snake snake;
-	private Node apple;
-
-	private Paint paint;
-	private Handler customHandler;
-	private Handler appleHandler;
-
-	public long score = 0L;
-
-	private int width;
-	private int height;
-	
-	private int speed;
-
-	public DirectionEnum directionEnum;
- 	private Node[][] board;
-	//Collection<Node> board = new LinkedHashSet<Node>();
-	boolean boardCreated = false;
-
-	private SensorManager sensorManager;
+    private int speed;
+    private Node[][] board;
+    private SensorManager sensorManager;
+    private Runnable updateTimerThread = new Runnable() {
+        public void run() {
+            snake.move(directionEnum);
+            invalidate();
+        }
+    };
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -70,27 +60,32 @@ public class BoardView extends View {
         board = new Node[widthNum][heightNum];
     }
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		if(snake != null && snake.isNodeOnBody(snake.getHead(), snake.getHead())) {
-			gameOverListener.onGameOver();
-		} else{
-			if(snake != null && apple != null && apple.equals(snake.getHead())) {
-				Log.i("Apple","Apple eaten by the snake");
-				snake.increaseSize(directionEnum);
-			}
-			initGame(canvas);
-			printSnake(canvas);
-			printscore(canvas);
-			printApple(canvas);
-			postDeleyed();
-		}
-	}
+    public void setGameOverListener(GameOverListener listener) {
+        this.gameOverListener = listener;
+    }
 
-	private void postDeleyed() {
-		customHandler.postDelayed(updateTimerThread, speed);
-	}
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (snake != null && (snake.isNodeOnBody(snake.getHead(), snake.getHead()) || hasTouchedWall() )) {
+            gameOverListener.onGameOver();
+        } else {
+            if (snake != null && apple != null && apple.equals(snake.getHead())) {
+                Log.i("Apple", "Apple eaten by the snake");
+                snake.increaseSize(directionEnum);
+            }
+            initGame(canvas);
+            printSnake(canvas);
+            printscore(canvas);
+            printApple(canvas);
+            printWalls(canvas);
+            postDeleyed();
+        }
+    }
+
+    private void postDeleyed() {
+        customHandler.postDelayed(updateTimerThread, speed);
+    }
 
     private void initGame(Canvas canvas) {
         if (!boardCreated) {
@@ -207,37 +202,30 @@ public class BoardView extends View {
         snake = new Snake(x, y);
         LinkedList<Node> body = new LinkedList<Node>();
 
-        for (int i = 0; i < 17; i++) {
-            body.add(new Node(0, i, null));
+        for (int i = 10; i < 15; i++) {
+            body.add(new Node(8, i, null));
         }
         snake.setBody(body);
         snake.getHead().setColor(Color.BLACK);
         snake.getTail().setColor(Color.BLUE);
     }
 
-	private Runnable updateTimerThread = new Runnable() {
-		public void run() {
-			snake.move(directionEnum);
-			invalidate();
-		}
-	};
-
-	private void createApple() {
-		Log.i("Apple", "Apple creation");
-		Random random = new Random();
-		apple = new Node(random.nextInt(width - 1) + 1,random.nextInt(height - 1) + 1,null);
-		while(snake.isNodeOnBody(apple)) {
-			apple = new Node(random.nextInt(width - 1) + 1,random.nextInt(height - 1) + 1,null);
-		}
-		Log.i("Apple", "Apple created at " + apple.getColumn() + " " + apple.getRow());
-		int appleRow = width * apple.getRow();
-		int appleHeight = height * apple.getColumn();
-		apple.setRect(new Rect(appleRow, appleHeight, appleRow + width, appleHeight + height));
-	}
+    private void createApple() {
+        Log.i("Apple", "Apple creation");
+        Random random = new Random();
+        apple = new Node(random.nextInt(width - 1) + 1, random.nextInt(height - 1) + 1, null);
+        while (snake.isNodeOnBody(apple)) {
+            apple = new Node(random.nextInt(width - 1) + 1, random.nextInt(height - 1) + 1, null);
+        }
+        Log.i("Apple", "Apple created at " + apple.getColumn() + " " + apple.getRow());
+        int appleRow = width * apple.getRow();
+        int appleHeight = height * apple.getColumn();
+        apple.setRect(new Rect(appleRow, appleHeight, appleRow + width, appleHeight + height));
+    }
 
     public void printWalls(Canvas canvas) {
-        for (int row = 0; row < widthNum-1; row++) {
-            for (int col = 0; col < heightNum-1; col++) {
+        for (int row = 0; row < widthNum - 1; row++) {
+            for (int col = 0; col < heightNum - 1; col++) {
                 Node nodeBoard = board[row][col];
                 if (nodeBoard != null && isWall(nodeBoard)) {
                     paint.setColor(Color.BLACK);
@@ -250,11 +238,15 @@ public class BoardView extends View {
     }
 
     private boolean isWall(Node node) {
-        return (node.getColumn() == 0 || node.getColumn() == heightNum-2 ||
-                node.getRow() == 0 || node.getRow() == widthNum-2);
+        return (node.getColumn() == 0 || node.getColumn() == heightNum - 2 ||
+                node.getRow() == 0 || node.getRow() == widthNum - 2);
     }
 
     private boolean hasTouchedWall() {
-    	return isWall(snake.getHead());
-	}
+        return isWall(snake.getHead());
+    }
+
+    public interface GameOverListener {
+        void onGameOver();
+    }
 }
