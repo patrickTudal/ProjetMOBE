@@ -20,6 +20,7 @@
         <activity android:name=".GameOverActivity"/>
         <activity android:name=".GameActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".PublishActivity"/>
     </application>
 
 </manifest>

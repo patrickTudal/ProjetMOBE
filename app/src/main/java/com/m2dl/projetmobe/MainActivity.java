@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.m2dl.projetmobe.Board.BoardView;
+import com.m2dl.projetmobe.Enum.DirectionEnum;
+import com.m2dl.projetmobe.Firebase.FirebaseService;
 
 public class MainActivity extends AppCompatActivity {
 

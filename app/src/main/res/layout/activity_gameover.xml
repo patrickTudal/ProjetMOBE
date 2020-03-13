@@ -1,17 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/gameOverText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Game over bitch" />
+        android:layout_width="448dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="224dp"
+        android:text="@string/badJack"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/retryButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/retry" />
-</LinearLayout>
+        android:layout_width="220dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/retry"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/publishButton" />
+
+    <Button
+        android:id="@+id/menuButton"
+        android:layout_width="220dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/retryButton" />
+
+    <Button
+        android:id="@+id/publishButton"
+        android:layout_width="220dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="192dp"
+        android:text="@string/publish"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameOverText" />
+
+    <TextView
+        android:id="@+id/pointText"
+        android:layout_width="194dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="136dp"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameOverText" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="163dp"
+        android:layout_height="53dp"
+        android:text="@string/reach"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/pointText"
+        app:layout_constraintHorizontal_bias="0.767"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameOverText" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="74dp"
+        android:layout_height="38dp"
+        android:text="@string/points"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/pointText"
+        app:layout_constraintTop_toBottomOf="@+id/gameOverText" />
+</androidx.constraintlayout.widget.ConstraintLayout>
