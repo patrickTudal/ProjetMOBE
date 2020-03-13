@@ -116,4 +116,6 @@ public class Snake {
 
 	public Node getHead(){return body.getLast();}
 
+	public Node getTail(){return body.getFirst();}
+
 }

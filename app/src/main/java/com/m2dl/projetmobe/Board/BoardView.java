@@ -166,7 +166,8 @@ public class BoardView extends View {
 			body.add(new Node(0, i, null));
 		}
 		snake.setBody(body);
-		snake.getHead().setColor(Color.RED);
+		snake.getHead().setColor(Color.BLACK);
+		snake.getTail().setColor(Color.BLUE);
 	}
 
 	private Runnable updateTimerThread = new Runnable() {
