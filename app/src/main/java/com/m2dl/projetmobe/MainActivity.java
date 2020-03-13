@@ -3,6 +3,7 @@ package com.m2dl.projetmobe;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -28,6 +29,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         boardView = findViewById(R.id.mainBoardView);
         manageSensor();
+        boardView.setGameOverListener(new BoardView.GameOverListener() {
+            @Override
+            public void onGameOver() {
+                Intent intent = new Intent(MainActivity.this, GameOverActivity.class);
+                intent.putExtra("score",Long.toString(boardView.score));
+                startActivity(intent);
+            }
+        });
     }
 
     private void manageSensor() {

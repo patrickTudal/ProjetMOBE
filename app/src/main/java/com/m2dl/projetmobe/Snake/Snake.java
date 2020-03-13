@@ -126,4 +126,16 @@ public class Snake {
 		return false;
 	}
 
+	public boolean isNodeOnBody(Node node, Node nodeToRemove) {
+		LinkedList<Node> listToCompare = new LinkedList(body);
+		listToCompare.remove(nodeToRemove);
+		for(Node n : listToCompare) {
+			if(n.equals(node)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 }

@@ -26,6 +26,17 @@ import java.util.TimerTask;
 
 @SuppressLint("DrawAllocation")
 public class BoardView extends View {
+
+	public interface GameOverListener {
+		void onGameOver();
+	}
+
+	private GameOverListener gameOverListener;
+
+	public void setGameOverListener(GameOverListener listener) {
+		this.gameOverListener = listener;
+	}
+
 	private static final int heightNum = 40;
 	private static final int widthNum = 20;
 	private static final int speedNum = 400;
@@ -40,7 +51,7 @@ public class BoardView extends View {
 	private Handler customHandler;
 	private Handler appleHandler;
 
-	private long score = 0L;
+	public long score = 0L;
 
 	private int width;
 	private int height;
@@ -67,11 +78,15 @@ public class BoardView extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		initGame(canvas);
-		printSnake(canvas);
-		printscore(canvas);
-		printApple(canvas);
-		postDeleyed();
+		if(snake != null && snake.isNodeOnBody(snake.getHead(), snake.getHead())) {
+			gameOverListener.onGameOver();
+		} else{
+			initGame(canvas);
+			printSnake(canvas);
+			printscore(canvas);
+			printApple(canvas);
+			postDeleyed();
+		}
 	}
 
 	private void postDeleyed() {
