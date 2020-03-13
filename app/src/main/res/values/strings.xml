@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ProjetMOBE</string>
     <string name="retry">Réessayer</string>
+    <string name="play">Jouer</string>
 </resources>
