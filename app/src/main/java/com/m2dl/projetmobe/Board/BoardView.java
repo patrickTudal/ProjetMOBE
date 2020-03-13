@@ -87,7 +87,7 @@ public class BoardView extends View {
         } else {
             if (snake != null && apple != null && apple.equals(snake.getHead())) {
                 Log.i("Apple", "Apple eaten by the snake");
-                snake.increaseSize();
+                snake.increaseSize(directionEnum);
                 apple = null;
             }
             initGame(canvas);
@@ -172,10 +172,6 @@ public class BoardView extends View {
         }
     }
 
-    public void setApple(Node apple) {
-        this.apple = apple;
-    }
-
     private void printApple(Canvas canvas) {
         if (apple != null) {
             paint.setColor(Color.RED);
@@ -242,7 +238,7 @@ public class BoardView extends View {
         snake.setBody(body);
     }
 
-    public void createApple() {
+    private void createApple() {
         Log.i("Apple", "Apple creation");
         if(apple==null) {
 			Random random = new Random();
