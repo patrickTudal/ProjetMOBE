@@ -239,8 +239,8 @@ public class BoardView extends View {
     }
 
     private void createApple() {
-        Log.i("Apple", "Apple creation");
         if(apple==null) {
+            Log.i("Apple", "Apple creation");
 			Random random = new Random();
 			apple = new Node(random.nextInt(widthNum - 3) , random.nextInt(heightNum - 3) , null);
 			while (snake.isNodeOnBody(apple) || isWall(apple)) {
