@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.hardware.SensorManager;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -17,12 +16,8 @@ import com.m2dl.projetmobe.Enum.DirectionEnum;
 import com.m2dl.projetmobe.Snake.Node;
 import com.m2dl.projetmobe.Snake.Snake;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.TimerTask;
 
 @SuppressLint("DrawAllocation")
 public class BoardView extends View {
@@ -64,70 +59,75 @@ public class BoardView extends View {
 
 	private SensorManager sensorManager;
 
-	public BoardView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		counterApple = 0;
-		customHandler = new Handler();
-		appleHandler = new Handler();
-		paint = new Paint();
-		directionEnum = DirectionEnum.RIGHT;
-		board = new Node[widthNum][heightNum];
-	}
+    public BoardView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        counterApple = 0;
+        customHandler = new Handler();
+        appleHandler = new Handler();
+        paint = new Paint();
+        directionEnum = DirectionEnum.RIGHT;
+        board = new Node[widthNum][heightNum];
+    }
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		if(snake != null && snake.isNodeOnBody(snake.getHead(), snake.getHead())) {
-			gameOverListener.onGameOver();
-		} else{
-			if(snake != null && apple != null && apple.equals(snake.getHead())) {
-				Log.i("Apple","Apple eaten by the snake");
-				snake.increaseSize(directionEnum);
-			}
-			initGame(canvas);
-			printSnake(canvas);
-			printscore(canvas);
-			printApple(canvas);
-			postDeleyed();
-		}
-	}
+    public void setGameOverListener(GameOverListener listener) {
+        this.gameOverListener = listener;
+    }
 
-	private void postDeleyed() {
-		customHandler.postDelayed(updateTimerThread, speed);
-	}
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (snake != null && (snake.isNodeOnBody(snake.getHead(), snake.getHead()) || hasTouchedWall() )) {
+            gameOverListener.onGameOver();
+        } else {
+            if (snake != null && apple != null && apple.equals(snake.getHead())) {
+                Log.i("Apple", "Apple eaten by the snake");
+                snake.increaseSize(directionEnum);
+            }
+            initGame(canvas);
+            printSnake(canvas);
+            printscore(canvas);
+            printApple(canvas);
+            printWalls(canvas);
+            postDeleyed();
+        }
+    }
 
-	private void initGame(Canvas canvas) {
-		if (!boardCreated) {
-			initBoard(canvas);
-			initSnake(widthNum, heightNum);
-			boardCreated = true;
-		}
-	}
+    private void postDeleyed() {
+        customHandler.postDelayed(updateTimerThread, speed);
+    }
 
-	private void printscore(Canvas canvas) {
-		paint.setAntiAlias(true);
-		paint.setTextSize(20);
-		paint.setColor(Color.RED);
-		canvas.drawText("Score :"+(score++), 15, 15, paint);
-	}
+    private void initGame(Canvas canvas) {
+        if (!boardCreated) {
+            initBoard(canvas);
+            initSnake(widthNum, heightNum);
+            boardCreated = true;
+        }
+    }
 
-	private void printSnake(Canvas canvas) {
+    private void printscore(Canvas canvas) {
+        paint.setAntiAlias(true);
+        paint.setTextSize(20);
+        paint.setColor(Color.RED);
+        canvas.drawText("Score :" + (score++), 15, 15, paint);
+    }
+
+    private void printSnake(Canvas canvas) {
 		/*Log.i("Snake", "Snake size");
 		Log.i("Snake", Integer.toString(snake.getBody().size()));*/
-		
+
 //		for (Node node : snake.getBody()) {
 //			Log.w("Snake", node.toString());
 //		}
-		
-		try {
-			paint.setStrokeWidth(10);
-			for (Node node : snake.getBody()) {
-				paint.setColor(node.getColor());
-				Node nodeBoard = board[node.getRow()][node.getColumn()];
-				if (nodeBoard != null) {
-					Rect rect = nodeBoard.getRect();
-					canvas.drawRect(rect, paint);
-				}
+
+        try {
+            paint.setStrokeWidth(10);
+            for (Node node : snake.getBody()) {
+                paint.setColor(node.getColor());
+                Node nodeBoard = board[node.getRow()][node.getColumn()];
+                if (nodeBoard != null) {
+                    Rect rect = nodeBoard.getRect();
+                    canvas.drawRect(rect, paint);
+                }
 
 //				if (board.contains(node)) {
 //					Iterator<Node> iterator = board.iterator();
@@ -138,105 +138,124 @@ public class BoardView extends View {
 //						}
 //					}
 //				}
-			}
-			++counterApple;
-			if(counterApple == TIMER_APPLE) {
-				createApple();
-				counterApple = 0;
+            }
+            ++counterApple;
+            if (counterApple == TIMER_APPLE) {
+                createApple();
+                counterApple = 0;
 
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			Log.e("erro:", e.getMessage());
-		}
-	}
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            Log.e("erro:", e.getMessage());
+        }
+    }
 
-	private void printApple(Canvas canvas) {
-		if(apple != null) {
-			paint.setColor(Color.RED);
-			paint.setStrokeWidth(5);
-			canvas.drawRect(apple.getRect(), paint);
-		}
-	}
+    private void printApple(Canvas canvas) {
+        if (apple != null) {
+            paint.setColor(Color.RED);
+            paint.setStrokeWidth(5);
+            canvas.drawRect(apple.getRect(), paint);
+        }
+    }
 
-	private void initBoard(Canvas canvas) {
-		
-		speed = speedNum;
+    private void initBoard(Canvas canvas) {
 
-		int endWidth = (canvas.getWidth());
-		int endHeight = (canvas.getHeight());
+        speed = speedNum;
 
-		width = (canvas.getWidth() / widthNum);
-		height = (canvas.getHeight() / heightNum);
+        int endWidth = (canvas.getWidth());
+        int endHeight = (canvas.getHeight());
 
-		int leftX = 5;
-		int topY = 5;
-		int rightX = width;
-		int bottomY = height;
+        width = (canvas.getWidth() / widthNum);
+        height = (canvas.getHeight() / heightNum);
 
-		boolean conditionX = true;
-		boolean conditionY = true;
+        int leftX = 5;
+        int topY = 5;
+        int rightX = width;
+        int bottomY = height;
 
-		int x = 0;
-		int y = 0;
-		while (conditionY) {
+        boolean conditionX = true;
+        boolean conditionY = true;
 
-			while (conditionX) {
-				Rect rect = new Rect(leftX, topY, rightX, bottomY);
-				Node node = new Node(x, y, rect);
-				board[x][y] = node;
-				
+        int x = 0;
+        int y = 0;
+        while (conditionY) {
+
+            while (conditionX) {
+                Rect rect = new Rect(leftX, topY, rightX, bottomY);
+                Node node = new Node(x, y, rect);
+                board[x][y] = node;
+
 //				board.add(node);
-				
-				leftX = leftX + width + 1;
-				rightX = rightX + width + 1;
-				conditionX = (leftX < (endWidth - width));
-				x++;
-			}
-			x = 0;
-			y++;
 
-			leftX = 5;
-			rightX = width;
-			conditionX = true;
+                leftX = leftX + width + 1;
+                rightX = rightX + width + 1;
+                conditionX = (leftX < (endWidth - width));
+                x++;
+            }
+            x = 0;
+            y++;
 
-			topY = topY + height + 1;
-			bottomY = bottomY + height + 1;
+            leftX = 5;
+            rightX = width;
+            conditionX = true;
 
-			conditionY = (topY < (endHeight - height));
-		}
-	}
+            topY = topY + height + 1;
+            bottomY = bottomY + height + 1;
 
-	private void initSnake(int x, int y) {
-		snake = new Snake(x, y);
-		LinkedList<Node> body = new LinkedList<Node>();
-		
-		for (int i = 0; i < 17; i++) {
-			body.add(new Node(0, i, null));
-		}
-		snake.setBody(body);
-		snake.getHead().setColor(Color.BLACK);
-		snake.getTail().setColor(Color.BLUE);
-	}
+            conditionY = (topY < (endHeight - height));
+        }
+    }
 
-	private Runnable updateTimerThread = new Runnable() {
-		public void run() {
-			snake.move(directionEnum);
-			invalidate();
-		}
-	};
+    private void initSnake(int x, int y) {
+        snake = new Snake(x, y);
+        LinkedList<Node> body = new LinkedList<Node>();
 
-	private void createApple() {
-		Log.i("Apple", "Apple creation");
-		Random random = new Random();
-		apple = new Node(random.nextInt(width - 1) + 1,random.nextInt(height - 1) + 1,null);
-		while(snake.isNodeOnBody(apple)) {
-			apple = new Node(random.nextInt(width - 1) + 1,random.nextInt(height - 1) + 1,null);
-		}
-		Log.i("Apple", "Apple created at " + apple.getColumn() + " " + apple.getRow());
-		int appleRow = width * apple.getRow();
-		int appleHeight = height * apple.getColumn();
-		apple.setRect(new Rect(appleRow, appleHeight, appleRow + width, appleHeight + height));
-	}
+        for (int i = 10; i < 15; i++) {
+            body.add(new Node(8, i, null));
+        }
+        snake.setBody(body);
+        snake.getHead().setColor(Color.BLACK);
+        snake.getTail().setColor(Color.BLUE);
+    }
 
+    private void createApple() {
+        Log.i("Apple", "Apple creation");
+        Random random = new Random();
+        apple = new Node(random.nextInt(width - 1) + 1, random.nextInt(height - 1) + 1, null);
+        while (snake.isNodeOnBody(apple)) {
+            apple = new Node(random.nextInt(width - 1) + 1, random.nextInt(height - 1) + 1, null);
+        }
+        Log.i("Apple", "Apple created at " + apple.getColumn() + " " + apple.getRow());
+        int appleRow = width * apple.getRow();
+        int appleHeight = height * apple.getColumn();
+        apple.setRect(new Rect(appleRow, appleHeight, appleRow + width, appleHeight + height));
+    }
+
+    public void printWalls(Canvas canvas) {
+        for (int row = 0; row < widthNum - 1; row++) {
+            for (int col = 0; col < heightNum - 1; col++) {
+                Node nodeBoard = board[row][col];
+                if (nodeBoard != null && isWall(nodeBoard)) {
+                    paint.setColor(Color.BLACK);
+                    Rect rect = nodeBoard.getRect();
+                    canvas.drawRect(rect, paint);
+                }
+            }
+        }
+
+    }
+
+    private boolean isWall(Node node) {
+        return (node.getColumn() == 0 || node.getColumn() == heightNum - 2 ||
+                node.getRow() == 0 || node.getRow() == widthNum - 2);
+    }
+
+    private boolean hasTouchedWall() {
+        return isWall(snake.getHead());
+    }
+
+    public interface GameOverListener {
+        void onGameOver();
+    }
 }
