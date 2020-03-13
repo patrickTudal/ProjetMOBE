@@ -121,41 +121,20 @@ public class Snake {
 	public Node getTail(){return body.getFirst();}
 
 	public boolean isNodeOnBody(Node node) {
-		for(Node n : new LinkedList<>(body)) {
+		LinkedList<Node> listToCompare = new LinkedList(body);
+		listToCompare.remove(this.getHead());
+		/*for(Node n : new LinkedList<>(body)) {
 			if(n.equals(node)) {
 				return true;
 			}
-		}
+		}*/
 		return false;
 	}
 
-	public boolean isNodeOnBody(Node node, Node nodeToRemove) {
-		LinkedList<Node> listToCompare = new LinkedList(body);
-		listToCompare.remove(nodeToRemove);
-		for(Node n : listToCompare) {
-			if(n.equals(node)) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 
 	public void increaseSize(DirectionEnum directionEnum) {
-		this.getBody().add(new Node(this.getTail().getRow(), this.getTail().getColumn(), null));
-		switch (directionEnum) {
-			case LEFT:
-				this.getTail().setColumn(this.getTail().getColumn() + 1);
-				break;
-			case RIGHT:
-				this.getTail().setColumn(this.getTail().getColumn() - 1);
-				break;
-			case UP:
-				this.getTail().setRow(this.getTail().getRow() + 1);
-				break;
-			case DOWN:
-				this.getTail().setRow(this.getTail().getRow() - 1);
-				break;
-		}
+		Node newNode = new Node(this.getHead().getRow(), this.getHead().getColumn(), null);
+		this.getBody().add(newNode);
 	}
 }

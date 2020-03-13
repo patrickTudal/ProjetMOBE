@@ -31,6 +31,7 @@ public class BoardView extends View {
 
 	private GameOverListener gameOverListener;
 
+
 	private static final int TIMER_APPLE = 30;
 	private int counterApple;
     private static final int TIMER_VULNERABILITY = 10;
@@ -67,6 +68,13 @@ public class BoardView extends View {
         board = new Node[widthNum][heightNum];
     }
 
+	private Runnable updateTimerThread = new Runnable() {
+		public void run() {
+			snake.move(directionEnum);
+			invalidate();
+		}
+	};
+
     public void setGameOverListener(GameOverListener listener) {
         this.gameOverListener = listener;
     }
@@ -74,14 +82,16 @@ public class BoardView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (snake != null && (snake.isNodeOnBody(snake.getHead(), snake.getHead()) || hasTouchedWall() )) {
+        if (snake != null && (snake.isNodeOnBody(snake.getHead()) || hasTouchedWall() )) {
             gameOverListener.onGameOver();
         } else {
             if (snake != null && apple != null && apple.equals(snake.getHead())) {
                 Log.i("Apple", "Apple eaten by the snake");
                 snake.increaseSize(directionEnum);
+                apple = null;
             }
             initGame(canvas);
+			createApple();
             printSnake(canvas);
             printscore(canvas);
             printApple(canvas);
@@ -119,8 +129,19 @@ public class BoardView extends View {
 
         try {
             paint.setStrokeWidth(10);
+
+
             for (Node node : snake.getBody()) {
                 paint.setColor(node.getColor());
+                if (node.equals(snake.getHead())){
+                    snake.getHead().setColor(Color.BLACK);
+                }
+                else if (node.equals(snake.getTail())){
+                    snake.getTail().setColor(Color.BLUE);
+                }
+                else {
+                    node.setColor(Color.GREEN);
+                }
                 Node nodeBoard = board[node.getRow()][node.getColumn()];
                 if (nodeBoard != null) {
                     Rect rect = nodeBoard.getRect();
@@ -136,12 +157,6 @@ public class BoardView extends View {
 //						}
 //					}
 //				}
-            }
-            ++counterApple;
-            if (counterApple == TIMER_APPLE) {
-                createApple();
-                counterApple = 0;
-
             }
             if(snake.invulnerable) {
                 counterVulnerability++;
@@ -160,7 +175,7 @@ public class BoardView extends View {
     private void printApple(Canvas canvas) {
         if (apple != null) {
             paint.setColor(Color.RED);
-            paint.setStrokeWidth(5);
+            paint.setStrokeWidth(10);
             canvas.drawRect(apple.getRect(), paint);
         }
     }
@@ -221,29 +236,22 @@ public class BoardView extends View {
             body.add(new Node(8, i, null));
         }
         snake.setBody(body);
-        snake.getHead().setColor(Color.BLACK);
-        snake.getTail().setColor(Color.BLUE);
     }
 
     private void createApple() {
         Log.i("Apple", "Apple creation");
-        Random random = new Random();
-        apple = new Node(random.nextInt(width - 1) + 1, random.nextInt(height - 1) + 1, null);
-        while (snake.isNodeOnBody(apple)) {
-            apple = new Node(random.nextInt(width - 1) + 1, random.nextInt(height - 1) + 1, null);
-        }
-        Log.i("Apple", "Apple created at " + apple.getColumn() + " " + apple.getRow());
-        int appleRow = width * apple.getRow();
-        int appleHeight = height * apple.getColumn();
-        apple.setRect(new Rect(appleRow, appleHeight, appleRow + width, appleHeight + height));
-    }
-
-	private Runnable updateTimerThread = new Runnable() {
-		public void run() {
-			snake.move(directionEnum);
-			invalidate();
+        if(apple==null) {
+			Random random = new Random();
+			apple = new Node(random.nextInt(widthNum - 3) , random.nextInt(heightNum - 3) , null);
+			while (snake.isNodeOnBody(apple) || isWall(apple)) {
+				apple = new Node(random.nextInt(widthNum - 3), random.nextInt(heightNum - 3), null);
+			}
+			Log.i("Apple", "Apple created at " + apple.getColumn() + " " + apple.getRow());
+			int appleRow = width * apple.getRow();
+			int appleHeight = height * apple.getColumn();
+			apple.setRect(new Rect(appleRow, appleHeight, appleRow + width, appleHeight + height));
 		}
-	};
+    }
 
     public void printWalls(Canvas canvas) {
         for (int row = 0; row < widthNum - 1; row++) {
