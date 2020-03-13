@@ -39,7 +39,7 @@ public class BoardView extends View {
 
 	private static final int heightNum = 40;
 	private static final int widthNum = 20;
-	private static final int speedNum = 400;
+	private static final int speedNum = 40;
 
 	private static final int TIMER_APPLE = 30;
 	private int counterApple;
@@ -81,6 +81,10 @@ public class BoardView extends View {
 		if(snake != null && snake.isNodeOnBody(snake.getHead(), snake.getHead())) {
 			gameOverListener.onGameOver();
 		} else{
+			if(snake != null && apple != null && apple.equals(snake.getHead())) {
+				Log.i("Apple","Apple eaten by the snake");
+				snake.increaseSize(directionEnum);
+			}
 			initGame(canvas);
 			printSnake(canvas);
 			printscore(canvas);
@@ -227,7 +231,7 @@ public class BoardView extends View {
 	private void createApple() {
 		Log.i("Apple", "Apple creation");
 		Random random = new Random();
-		apple = new Node(random.nextInt(width),random.nextInt(height),null);
+		apple = new Node(random.nextInt(width - 1) + 1,random.nextInt(height - 1) + 1,null);
 		while(snake.isNodeOnBody(apple)) {
 			apple = new Node(random.nextInt(width - 1) + 1,random.nextInt(height - 1) + 1,null);
 		}

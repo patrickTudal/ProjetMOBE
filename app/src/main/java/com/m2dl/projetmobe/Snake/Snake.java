@@ -138,4 +138,21 @@ public class Snake {
 	}
 
 
+	public void increaseSize(DirectionEnum directionEnum) {
+		this.getBody().add(new Node(this.getTail().getRow(), this.getTail().getColumn(), null));
+		switch (directionEnum) {
+			case LEFT:
+				this.getTail().setColumn(this.getTail().getColumn() + 1);
+				break;
+			case RIGHT:
+				this.getTail().setColumn(this.getTail().getColumn() - 1);
+				break;
+			case UP:
+				this.getTail().setRow(this.getTail().getRow() + 1);
+				break;
+			case DOWN:
+				this.getTail().setRow(this.getTail().getRow() - 1);
+				break;
+		}
+	}
 }

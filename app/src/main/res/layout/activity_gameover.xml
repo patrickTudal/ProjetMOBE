@@ -8,4 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Game over bitch" />
+
+    <Button
+        android:id="@+id/retryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/retry" />
 </LinearLayout>
