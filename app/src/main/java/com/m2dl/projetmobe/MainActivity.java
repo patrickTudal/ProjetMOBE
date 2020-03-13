@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.m2dl.projetmobe.Board.BoardView;
 import com.m2dl.projetmobe.Enum.DirectionEnum;
+import com.m2dl.projetmobe.Firebase.FirebaseService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        FirebaseService.publishScore("180","toto");
     }
 
     private void manageSensor() {

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "715431932895",
+    "firebase_url": "https://snakeitlikethat.firebaseio.com",
+    "project_id": "snakeitlikethat",
+    "storage_bucket": "snakeitlikethat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715431932895:android:6278696c8c3871b0a78a6a",
+        "android_client_info": {
+          "package_name": "com.m2dl.projetmobe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "715431932895-lulk4d1mjfvo0l06lrn4tb2m6dir1cf0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-PTdKpQ9SLaAJUI7in3hGDOlaTHMLSgM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "715431932895-lulk4d1mjfvo0l06lrn4tb2m6dir1cf0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
