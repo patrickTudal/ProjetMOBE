@@ -85,10 +85,10 @@ public class BoardView extends View {
 //		}
 		
 		try {
-			paint.setColor(Color.GREEN);
+
 			paint.setStrokeWidth(10);
 			for (Node node : snake.getBody()) {
-				
+				paint.setColor(node.getColor());
 //				Node nodeBoard = board[node.getRow()][node.getColumn()];
 //				if (nodeBoard != null) {
 //					Rect rect = nodeBoard.getRect();
@@ -166,6 +166,7 @@ public class BoardView extends View {
 			body.add(new Node(0, i, null));
 		}
 		snake.setBody(body);
+		snake.getHead().setColor(Color.RED);
 	}
 
 	private Runnable updateTimerThread = new Runnable() {

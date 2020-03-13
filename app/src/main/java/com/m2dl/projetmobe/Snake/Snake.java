@@ -1,5 +1,7 @@
 package com.m2dl.projetmobe.Snake;
 
+import android.graphics.Color;
+
 import com.m2dl.projetmobe.Enum.DirectionEnum;
 
 import java.util.LinkedList;
@@ -16,7 +18,6 @@ public class Snake {
 		this.endColumn = maxColumns;
 		this.setBody(new LinkedList<Node>());
 		this.directionEnum = DirectionEnum.RIGHT;
-		
 		
 	}
 
@@ -112,5 +113,7 @@ public class Snake {
 	public void setBody(LinkedList<Node> body) {
 		this.body = body;
 	}
+
+	public Node getHead(){return body.getLast();}
 
 }

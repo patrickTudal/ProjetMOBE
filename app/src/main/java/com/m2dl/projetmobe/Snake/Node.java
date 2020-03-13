@@ -1,5 +1,6 @@
 package com.m2dl.projetmobe.Snake;
 
+import android.graphics.Color;
 import android.graphics.Rect;
 
 /**
@@ -11,13 +12,14 @@ public class Node {
 	private int row;
 	private int column;
 	private Rect rect;
-	
-//	private Node right
+	private int color;
+
 
 	public Node(int row, int column, Rect rect) {
 		this.row = row;
 		this.column = column;
 		this.rect = rect;
+		color = Color.GREEN;
 	}
 
 	public Rect getRect() {
@@ -44,7 +46,13 @@ public class Node {
 		this.column = column;
 	}
 
-	
+	public int getColor() {
+		return color;
+	}
+
+	public void setColor(int color) {
+		this.color = color;
+	}
 
 	@Override
 	public int hashCode() {
