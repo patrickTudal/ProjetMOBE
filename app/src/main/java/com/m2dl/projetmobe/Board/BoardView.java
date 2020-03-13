@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -46,10 +47,12 @@ public class BoardView extends View {
 	
 	private int speed;
 
-	DirectionEnum directionEnum;
+	public DirectionEnum directionEnum;
  	private Node[][] board;
 	//Collection<Node> board = new LinkedHashSet<Node>();
 	boolean boardCreated = false;
+
+	private SensorManager sensorManager;
 
 	public BoardView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -201,25 +204,6 @@ public class BoardView extends View {
 
 	private Runnable updateTimerThread = new Runnable() {
 		public void run() {
-			speed -= 2;
-			int rand = (int) (Math.random() * 30);
-			
-			switch (rand) {
-				case 1:
-					directionEnum = DirectionEnum.RIGHT;
-					break;
-				case 2:
-					directionEnum = DirectionEnum.LEFT;
-					break;
-				case 3:
-					directionEnum = DirectionEnum.UP;
-					break;
-				case 4:
-					directionEnum = DirectionEnum.DOWN;
-					break;
-				default:
-					break;
-			}
 			snake.move(directionEnum);
 			invalidate();
 		}

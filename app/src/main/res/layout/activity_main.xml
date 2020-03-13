@@ -7,7 +7,7 @@
     >
 
     <com.m2dl.projetmobe.Board.BoardView
-        android:id="@+id/canvas"
+        android:id="@+id/mainBoardView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         />
