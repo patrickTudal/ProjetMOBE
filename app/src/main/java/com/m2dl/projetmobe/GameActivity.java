@@ -1,7 +1,5 @@
 package com.m2dl.projetmobe;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -12,7 +10,8 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.m2dl.projetmobe.Board.BoardView;
 import com.m2dl.projetmobe.Enum.DirectionEnum;
@@ -38,7 +37,6 @@ public class GameActivity extends AppCompatActivity {
     private double last_z;
     private double lastUpdate;
     private static final int SHAKE_THRESHOLD = 1000;
-    private LinearLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

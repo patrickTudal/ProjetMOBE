@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,7 +22,7 @@ import java.util.Random;
 public class BoardView extends View {
 	public static final int heightNum = 40;
 	public static final int widthNum = 20;
-	private static final int speedNum = 400;
+	private static final int speedNum = 600;
 
 	public interface GameOverListener {
 		void onGameOver();
@@ -31,10 +30,7 @@ public class BoardView extends View {
 
 	private GameOverListener gameOverListener;
 
-
-	private static final int TIMER_APPLE = 30;
-	private int counterApple;
-    private static final int TIMER_VULNERABILITY = 10;
+    private static final int TIMER_VULNERABILITY = 15;
     public int counterVulnerability;
 
 	public Snake snake;
@@ -42,7 +38,6 @@ public class BoardView extends View {
 
 	private Paint paint;
 	private Handler customHandler;
-	private Handler appleHandler;
 
 	public long score = 0L;
 
@@ -53,16 +48,11 @@ public class BoardView extends View {
 
 	public DirectionEnum directionEnum;
  	private Node[][] board;
-	//Collection<Node> board = new LinkedHashSet<Node>();
 	boolean boardCreated = false;
-
-	private SensorManager sensorManager;
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        counterApple = 0;
         customHandler = new Handler();
-        appleHandler = new Handler();
         paint = new Paint();
         directionEnum = DirectionEnum.RIGHT;
         board = new Node[widthNum][heightNum];
@@ -88,14 +78,15 @@ public class BoardView extends View {
             if (snake != null && apple != null && apple.equals(snake.getHead())) {
                 Log.i("Apple", "Apple eaten by the snake");
                 snake.increaseSize();
+                score += 20;
                 apple = null;
             }
             initGame(canvas);
 			createApple();
             printSnake(canvas);
-            printscore(canvas);
             printApple(canvas);
             printWalls(canvas);
+            printscore(canvas);
             postDeleyed();
         }
     }
@@ -114,19 +105,16 @@ public class BoardView extends View {
 
     private void printscore(Canvas canvas) {
         paint.setAntiAlias(true);
-        paint.setTextSize(20);
+        paint.setTextSize(32);
         paint.setColor(Color.RED);
-        canvas.drawText("Score :" + (score++), 15, 15, paint);
+        Random random = new Random();
+        if(random.nextInt(3) == 1) {
+            ++score;
+        }
+        canvas.drawText("Score :" + score, 25, 25, paint);
     }
 
     private void printSnake(Canvas canvas) {
-		/*Log.i("Snake", "Snake size");
-		Log.i("Snake", Integer.toString(snake.getBody().size()));*/
-
-//		for (Node node : snake.getBody()) {
-//			Log.w("Snake", node.toString());
-//		}
-
         try {
             paint.setStrokeWidth(10);
 
@@ -147,16 +135,6 @@ public class BoardView extends View {
                     Rect rect = nodeBoard.getRect();
                     canvas.drawRect(rect, paint);
                 }
-
-//				if (board.contains(node)) {
-//					Iterator<Node> iterator = board.iterator();
-//					while (iterator.hasNext()) {
-//						Node next = iterator.next();
-//						if (node.equals(next)) {
-//							canvas.drawRect(next.getRect(), paint);
-//						}
-//					}
-//				}
             }
             if(snake.invulnerable) {
                 counterVulnerability++;
@@ -167,8 +145,7 @@ public class BoardView extends View {
                 }
             }
         } catch (Exception e) {
-            // TODO: handle exception
-            Log.e("erro:", e.getMessage());
+            Log.e("Error", e.getMessage());
         }
     }
 
@@ -206,9 +183,6 @@ public class BoardView extends View {
                 Rect rect = new Rect(leftX, topY, rightX, bottomY);
                 Node node = new Node(x, y, rect);
                 board[x][y] = node;
-
-//				board.add(node);
-
                 leftX = leftX + width + 1;
                 rightX = rightX + width + 1;
                 conditionX = (leftX < (endWidth - width));

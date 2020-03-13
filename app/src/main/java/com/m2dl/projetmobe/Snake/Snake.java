@@ -1,7 +1,5 @@
 package com.m2dl.projetmobe.Snake;
 
-import android.graphics.Color;
-
 import com.m2dl.projetmobe.Board.BoardView;
 import com.m2dl.projetmobe.Enum.DirectionEnum;
 
