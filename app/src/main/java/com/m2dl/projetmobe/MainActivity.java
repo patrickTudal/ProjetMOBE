@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        FirebaseService.publishScore("180","toto");
     }
 
     private void manageSensor() {

@@ -22,6 +22,7 @@ public class FirebaseService {
 
 
     public static void publishScore(String score, String pseudo){
+        Log.i("FirebaseService","publish score");
         autoIncrementId( score, pseudo);
     }
 
