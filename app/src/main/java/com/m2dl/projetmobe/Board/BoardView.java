@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -19,16 +20,23 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Random;
+import java.util.TimerTask;
 
 @SuppressLint("DrawAllocation")
 public class BoardView extends View {
 	private static final int heightNum = 40;
 	private static final int widthNum = 20;
 
+	private static final int TIMER_APPLE = 30;
+	private int counterApple;
+
 	private Snake snake;
+	private Node apple;
 
 	private Paint paint;
 	private Handler customHandler;
+	private Handler appleHandler;
 
 	private long premium = 0L;
 
@@ -42,7 +50,9 @@ public class BoardView extends View {
 
 	public BoardView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		counterApple = 0;
 		customHandler = new Handler();
+		appleHandler = new Handler();
 		paint = new Paint();
 		directionEnum = DirectionEnum.RIGHT;
 //		board = new Node[widthNum][heightNum];
@@ -54,6 +64,7 @@ public class BoardView extends View {
 		initGame(canvas);
 		printSnake(canvas);
 		printPremium(canvas);
+		printApple(canvas);
 		postDeleyed();
 	}
 
@@ -77,8 +88,8 @@ public class BoardView extends View {
 	}
 
 	private void printSnake(Canvas canvas) {
-		Log.e("Snake", "IN�CIO - size");
-		Log.e("Snake", Integer.toString(snake.getBody().size()));
+		/*Log.i("Snake", "Snake size");
+		Log.i("Snake", Integer.toString(snake.getBody().size()));*/
 		
 //		for (Node node : snake.getBody()) {
 //			Log.w("Snake", node.toString());
@@ -104,11 +115,23 @@ public class BoardView extends View {
 						}
 					}
 				}
-				
+			}
+			++counterApple;
+			if(counterApple == TIMER_APPLE) {
+				createApple();
+				counterApple = 0;
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			Log.e("erro:", e.getMessage());
+		}
+	}
+
+	private void printApple(Canvas canvas) {
+		if(apple != null) {
+			paint.setColor(Color.RED);
+			paint.setStrokeWidth(5);
+			canvas.drawRect(apple.getRect(), paint);
 		}
 	}
 
@@ -192,5 +215,18 @@ public class BoardView extends View {
 			invalidate();
 		}
 	};
+
+	private void createApple() {
+		Log.i("Apple", "Apple creation");
+		Random random = new Random();
+		apple = new Node(random.nextInt(width),random.nextInt(height),null);
+		while(snake.isNodeOnBody(apple)) {
+			apple = new Node(random.nextInt(width - 1) + 1,random.nextInt(height - 1) + 1,null);
+		}
+		Log.i("Apple", "Apple created at " + apple.getColumn() + " " + apple.getRow());
+		int appleRow = width * apple.getRow();
+		int appleHeight = height * apple.getColumn();
+		apple.setRect(new Rect(appleRow, appleHeight, appleRow + width, appleHeight + height));
+	}
 
 }

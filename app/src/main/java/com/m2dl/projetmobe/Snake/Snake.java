@@ -16,8 +16,6 @@ public class Snake {
 		this.endColumn = maxColumns;
 		this.setBody(new LinkedList<Node>());
 		this.directionEnum = DirectionEnum.RIGHT;
-		
-		
 	}
 
 	public void move(DirectionEnum directionEnum) {
@@ -111,6 +109,15 @@ public class Snake {
 
 	public void setBody(LinkedList<Node> body) {
 		this.body = body;
+	}
+
+	public boolean isNodeOnBody(Node node) {
+		for(Node n : new LinkedList<>(body)) {
+			if(n.equals(node)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
