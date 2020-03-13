@@ -39,8 +39,8 @@ public class BoardView extends View {
 	private int speed;
 	
 	DirectionEnum directionEnum;
-//	private Node[][] board;
-	Collection<Node> board = new LinkedHashSet<Node>();
+ 	private Node[][] board;
+	//Collection<Node> board = new LinkedHashSet<Node>();
 	boolean boardCreated = false;
 
 	public BoardView(Context context, AttributeSet attrs) {
@@ -48,7 +48,7 @@ public class BoardView extends View {
 		customHandler = new Handler();
 		paint = new Paint();
 		directionEnum = DirectionEnum.RIGHT;
-//		board = new Node[widthNum][heightNum];
+		board = new Node[widthNum][heightNum];
 	}
 
 	@Override
@@ -92,21 +92,21 @@ public class BoardView extends View {
 			paint.setStrokeWidth(10);
 			for (Node node : snake.getBody()) {
 				paint.setColor(node.getColor());
-//				Node nodeBoard = board[node.getRow()][node.getColumn()];
-//				if (nodeBoard != null) {
-//					Rect rect = nodeBoard.getRect();
-//					canvas.drawRect(rect, paint);
-//				}
-				
-				if (board.contains(node)) {
-					Iterator<Node> iterator = board.iterator();
-					while (iterator.hasNext()) {
-						Node next = iterator.next();
-						if (node.equals(next)) {
-							canvas.drawRect(next.getRect(), paint);
-						}
-					}
+				Node nodeBoard = board[node.getRow()][node.getColumn()];
+				if (nodeBoard != null) {
+					Rect rect = nodeBoard.getRect();
+					canvas.drawRect(rect, paint);
 				}
+				
+//				if (board.contains(node)) {
+//					Iterator<Node> iterator = board.iterator();
+//					while (iterator.hasNext()) {
+//						Node next = iterator.next();
+//						if (node.equals(next)) {
+//							canvas.drawRect(next.getRect(), paint);
+//						}
+//					}
+//				}
 				
 			}
 		} catch (Exception e) {
@@ -140,9 +140,9 @@ public class BoardView extends View {
 			while (conditionX) {
 				Rect rect = new Rect(leftX, topY, rightX, bottomY);
 				Node node = new Node(x, y, rect);
-//				board[x][y] = node;
+				board[x][y] = node;
 				
-				board.add(node);
+//				board.add(node);
 				
 				leftX = leftX + width + 1;
 				rightX = rightX + width + 1;
