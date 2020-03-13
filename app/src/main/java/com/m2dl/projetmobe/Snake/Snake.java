@@ -100,7 +100,7 @@ public class Snake {
 			return false;
 		}
 		if (directionEnum.equals(DirectionEnum.DOWN)
-				&& this.directionEnum.equals(DirectionEnum.LEFT)) {
+				&& this.directionEnum.equals(DirectionEnum.UP)) {
 			return false;
 		}
 		return true;
