@@ -26,6 +26,9 @@ import java.util.TimerTask;
 
 @SuppressLint("DrawAllocation")
 public class BoardView extends View {
+	public static final int heightNum = 40;
+	public static final int widthNum = 20;
+	private static final int speedNum = 400;
 
 	public interface GameOverListener {
 		void onGameOver();
@@ -121,7 +124,6 @@ public class BoardView extends View {
 //		}
 		
 		try {
-
 			paint.setStrokeWidth(10);
 			for (Node node : snake.getBody()) {
 				paint.setColor(node.getColor());
