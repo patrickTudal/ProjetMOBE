@@ -13,12 +13,14 @@ public class Snake {
 	private int endRow;
 	private int endColumn;
 	private DirectionEnum directionEnum;
-	
+	public boolean invulnerable;
+
 	public Snake(int maxRows, int maxColumns) {
 		this.endRow = maxRows;
 		this.endColumn = maxColumns;
 		this.setBody(new LinkedList<Node>());
 		this.directionEnum = DirectionEnum.RIGHT;
+		invulnerable = false;
 	}
 
 	public void move(DirectionEnum directionEnum) {

@@ -23,8 +23,19 @@ public class MainActivity extends AppCompatActivity {
     private SensorEventListener gyroscopeEventListner;
     private Sensor light;
     private SensorEventListener lightEventListener;
-    private static final float GYROSCOPE_SENSITIVITY = 2f;
-    private float lightValue = 400f;
+    private Sensor shake;
+    private SensorEventListener shakeEventListener;
+    private static final float GYROSCOPE_SENSITIVITY = 1.5f;
+
+    // Shake sensors variables
+    private double x;
+    private double y;
+    private double z;
+    private double last_x;
+    private double last_y;
+    private double last_z;
+    private double lastUpdate;
+    private static final int SHAKE_THRESHOLD = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +103,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSensorChanged(SensorEvent event) {
-                Log.i("Sensor", "Sensor light changed");
-                boardView.speed = (int) event.values[0];
+                //Log.i("Sensor", "Sensor light changed");
+                if(event.values[0] < 300 && boardView.speed > 200) {
+                    Log.i("Sensor","Increase speed");
+                    boardView.speed -= 10;
+                }
             }
 
             @Override
@@ -101,6 +115,43 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
+        shake = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        shakeEventListener = new SensorEventListener2() {
+            @Override
+            public void onFlushCompleted(Sensor sensor) {
+
+            }
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                long curTime = System.currentTimeMillis();
+                // only allow one update every 100ms.
+                if ((curTime - lastUpdate) > 100) {
+                    double diffTime = (curTime - lastUpdate);
+                    lastUpdate = curTime;
+
+                    x = event.values[SensorManager.DATA_X];
+                    y = event.values[SensorManager.DATA_Y];
+                    z = event.values[SensorManager.DATA_Z];
+
+                    double speed = Math.abs(x+y+z - last_x - last_y - last_z) / diffTime * 10000;
+
+                    if (speed > SHAKE_THRESHOLD) {
+                        Log.d("sensor", "shake detected with speed: " + speed);
+                        boardView.snake.invulnerable = true;
+                    }
+                    last_x = x;
+                    last_y = y;
+                    last_z = z;
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+            }
+        };
+        sensorManager.registerListener(shakeEventListener, shake, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(gyroscopeEventListner,gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(lightEventListener, light, SensorManager.SENSOR_DELAY_NORMAL);
     }

@@ -31,14 +31,12 @@ public class BoardView extends View {
 
 	private GameOverListener gameOverListener;
 
-	public void setGameOverListener(GameOverListener listener) {
-		this.gameOverListener = listener;
-	}
-
 	private static final int TIMER_APPLE = 30;
 	private int counterApple;
+    private static final int TIMER_VULNERABILITY = 10;
+    public int counterVulnerability;
 
-	private Snake snake;
+	public Snake snake;
 	private Node apple;
 
 	private Paint paint;
@@ -145,6 +143,14 @@ public class BoardView extends View {
                 counterApple = 0;
 
             }
+            if(snake.invulnerable) {
+                counterVulnerability++;
+                if(counterVulnerability == TIMER_VULNERABILITY) {
+                    Log.d("Snake", "Set snake invulnerability false");
+                    counterVulnerability = 0;
+                    snake.invulnerable = false;
+                }
+            }
         } catch (Exception e) {
             // TODO: handle exception
             Log.e("erro:", e.getMessage());
@@ -232,6 +238,13 @@ public class BoardView extends View {
         apple.setRect(new Rect(appleRow, appleHeight, appleRow + width, appleHeight + height));
     }
 
+	private Runnable updateTimerThread = new Runnable() {
+		public void run() {
+			snake.move(directionEnum);
+			invalidate();
+		}
+	};
+
     public void printWalls(Canvas canvas) {
         for (int row = 0; row < widthNum - 1; row++) {
             for (int col = 0; col < heightNum - 1; col++) {
@@ -252,10 +265,6 @@ public class BoardView extends View {
     }
 
     private boolean hasTouchedWall() {
-        return isWall(snake.getHead());
-    }
-
-    public interface GameOverListener {
-        void onGameOver();
+        return isWall(snake.getHead()) && !snake.invulnerable;
     }
 }
